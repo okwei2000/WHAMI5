@@ -1,0 +1,652 @@
+<!DOCTYPE html>
+<html ng-app ="ionicApp">
+  <head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="initial-scale=1, maximum-scale=1, user-scalable=no, width=device-width">
+    <title></title>
+
+    <link href="lib/ionic/css/ionic.css" rel="stylesheet">
+    <link href="css/style.css" rel="stylesheet">
+	  <link rel="stylesheet" href="http://cdn.leafletjs.com/leaflet-0.7.3/leaflet.css" />
+    <link href="css/leaflet.label.css" rel="stylesheet">
+    <!-- IF using Sass (run gulp sass first), then uncomment below and remove the CSS includes above
+    <link href="css/ionic.app.css" rel="stylesheet">
+    -->
+
+    <!-- ionic/angularjs js -->
+   
+    <script src="js/googlemap.js"></script>
+     <script src="lib/ionic/js/ionic.bundle.js"></script>
+
+    <script src="js/leaflet.js"></script>
+    <script src= "js/controller/leaflet-google.js"></script>
+    <script src= "js/controller/label.js"></script>
+    <script src="js/angular-leaflet-directive.min.js"></script>
+   <!-- cordova script (this will be a 404 during development) -->
+    <script src="http://code.jquery.com/jquery-2.0.0.js"></script>
+    <script src="ng-cordova.js"></script>
+    <script src="cordova.js"></script>
+    
+
+    <!-- your app's js -->
+    
+  </head>
+  <body ng-controller="MainCtrl as main">
+    
+    <ion-nav-bar class="nav-title-slide-ios7 bar-positive">
+      <ion-nav-back-button class="button-icon ion-arrow-left-c">
+      </ion-nav-back-button>
+    </ion-nav-bar>
+             
+    <ion-nav-view animation="slide-left-right"></ion-nav-view>
+
+
+    <script id="tabs.html" type="text/ng-template">
+      <ion-tabs class="tabs-icon-top tabs-positive tabs-item-hide">
+
+        <ion-tab title="Home" icon="ion-home" href="#/tab/home">
+          <ion-nav-view name="home-tab"></ion-nav-view>
+        </ion-tab>
+
+      </ion-tabs>
+    </script>
+
+    <script id="home.html" type="text/ng-template" >
+      <ion-view title="Whami" hide-back-button="{{hideback}}">
+        <ion-content class="padding">
+              <div class="topsection">
+                  <img class="tickitIcon" src="img/whami1.png" />
+              </div>
+
+          <div class="list list-inset">
+        	  <label class="item item-input">
+        		<input type="text" placeholder="Enter Your Email Id" id="validateEmail" ng-model="main.textValue">
+        	  </label>
+        	</div> 
+          
+      
+      <a class="button button-block button-balanced startWhami" ng-click="login()"> 
+         <span class="nameMrgn">Start using Whami</span>
+      </a>
+
+      <button class="button button-block" ng-show="showFrndDisable">
+        Show Friends
+      </button>
+
+      <button class="button icon-right ion-chevron-right button-block button-positive" ng-show="showFrndButton" ng-click="showfriends()">
+        Show Friends
+      </button>
+
+        </ion-content>
+      </ion-view>
+    </script>
+
+   
+   
+    <script id="createticket.html" type="text/ng-template">
+<ion-view title="New Whami" hide-back-button="true">
+
+    <ion-nav-buttons side="left">
+          <a class="button button-icon ion-arrow-left-c" ng-click="backToHome()"></a>
+    </ion-nav-buttons>
+
+  <ion-content class="padding">
+              <div class="topsection">
+                <div>
+                  <img ng-click="backToHome()" class="tickitIcon" src="img/whami1.png" />
+                </div>
+            
+                <div ng-show="wifiAvailable">
+                  <img class="fright" src="img/wifiHigh.png" />
+                </div>
+
+                <div ng-show="noNetwork">
+                  <img class="fright" src="img/no_network.png" />
+                </div>
+
+                <div ng-show="twoG">
+                  <img class="fright" src="img/n_3.png" />
+                </div>
+
+                <div ng-show="threeG">
+                  <img class="fright" src="img/n3g_4.png" />
+                </div>
+
+                <div ng-show="fourG">
+                  <img class="fright" src="img/n4g_4.png" />
+                </div>
+
+                <div ng-show="ethernet">
+                  <img class="fright" src="img/ethernet.png" />
+                </div>
+
+                <div ng-show="unknown">
+                  <img class="fright" src="img/Unknown_connection.png" />
+                </div>
+              </div>  
+     
+          <div class="row subjectsection">
+            <div class="col col-75">
+                <label class="item item-input item-stacked-label">
+                    <input type="text" placeholder="Reminder tag" id="subject" ng-model="main.sub"/>
+                </label>    
+            </div>
+
+              <div class="col" ng-show="!imageAvailable">
+                <button class="button icon ion-android-camera" ng-click = "takePicture()"></button>
+              </div>
+
+                <div class="col" ng-show="imageAvailable">
+                  <img id="imagetaken" src="" width="60px" height="60px"/>
+                </div>
+          </div>
+
+
+            <div class="fright" ng-show="imageAvailable">
+              <button class="button button-small button-assertive" ng-click="deleteImage()">
+                Clear
+              </button>
+            </div>
+  					
+						  <label class="item item-input item-stacked-label">
+							  <textarea placeholder="Description" id="msgbody" rows="5" cols="50" ng-model="main.msg"></textarea>
+						  </label>
+				 
+			<div class="row" ng-show="!imageAvailable">
+					<div class="col col-50"> 
+						<button class="button button-block  button-balanced" ng-click="ticketupload(8)">
+						 <img src="img/whami.png"/>
+						</button>
+					</div>
+
+					<div class="col col-33 mayBe">
+						<button class="button button-block button-energized mayBePortion" ng-click="ticketupload(1)">
+						 <img src="img/whami.png"/>
+					  </button>
+					</div>
+
+					<div class="col col-20">
+						 <button class="button button-block button-assertive" ng-click="ticketupload(4)">
+						  <img src="img/whami.png"/>
+						 </button>
+					</div>
+			</div>
+					  
+					 
+					  
+			  <div class="row" ng-show="imageAvailable">		  
+					<div class="col col-50"> 
+						<button class="button button-block  button-balanced" ng-click="sendImage(8)">
+						 <img src="img/whami.png"/>
+						</button>
+					</div>
+
+					<div class="col col-33 mayBe">
+						 <button class="button button-block button-energized mayBePortion" ng-click="sendImage(1)">
+						 <img src="img/whami.png"/>
+						</button>
+					</div>
+
+					<div class="col col-20">
+						 <button class="button button-block button-assertive" ng-click="sendImage(4)">
+						 <img src="img/whami.png"/>
+						 </button>
+					</div>
+		    </div>
+
+      <ion-toggle toggle-class="toggle-positive" ng-model="main.pushNotification.checked" ng-change="main.pushNotificationChange()">
+                Auto tracking
+      </ion-toggle>
+
+        <div ng-show="statussucess">
+            <strong>Success:{{statusTime}}</strong>
+      </div>
+
+      <div ng-show= "stausFail">
+            <p>Failure try again later</p>
+      </div>
+
+  </ion-content>
+
+
+</ion-view>
+    </script>
+
+    <script id="friendlist.html" type="text/ng-template">
+      <ion-view title="Friends List" hide-back-button="true">
+            <ion-nav-buttons side="left">
+                  <a class="button button-icon ion-arrow-left-c" ng-click="toHome()"></a>
+            </ion-nav-buttons>
+
+         <ion-nav-buttons side="right">
+          <a class="button button-icon icon ion-share" ng-click="selectFriend()"></a>
+         </ion-nav-buttons>
+
+        <ion-content class="padding">
+        <p ng-show="noFriends">Your friend list is empty</p>
+        <p ng-show="!noFriends">Whami Friends</p>
+        <ion-list>
+          <ion-item ng-repeat="friend in whamiUserdetail">
+          <p class="fleft">Me</p>
+          <a href="#/tab/map{{friend.userId}}"><img class="fright" src="img/whami.png" width="35" height="35" ></a>
+          </ion-item>
+        </ion-list>
+        <ion-refresher on-refresh="doRefresh()"
+                     pulling-text="Pull to refresh..."
+                     refreshing-text="Refreshing!"
+                     refreshing-icon="ion-loading-c">
+                     
+       </ion-refresher>
+
+			<ion-list>
+			  <ion-item ng-repeat="friend in whamiUser | orderBy:'firstName' | orderBy:'lastName'">
+				<p class="fleft">{{friend.firstName}} {{friend.lastName}} </p>
+				<a href="#/tab/map{{friend.userId}}"><img class="fright" src="img/whami.png" width="35" height="35" ></a>
+			  </ion-item>
+			</ion-list>
+			
+        </ion-content>
+      <ion-footer-bar align-title="left">
+            <div class="button-bar">
+              <button class="button button-positive" ng-click="inviteFrnd()">Invite Friend</button>
+            </div>
+        </ion-footer-bar>
+      </ion-view>
+    </script>
+
+    <script id="inviteFriend.html" type="text/ng-template">
+
+      <ion-view title="Invite Friend" hide-back-button="true">
+              <ion-nav-buttons side="left">
+                    <a class="button button-icon ion-arrow-left-c" ng-click="backTofriend()"></a>
+              </ion-nav-buttons>
+         <ion-content>
+         <ion-refresher on-refresh="doRefresh()"
+                     pulling-text="Pull to refresh..."
+                     refreshing-text="Refreshing!"
+                     refreshing-icon="ion-loading-c">
+                     
+       </ion-refresher>
+            <ion-list>
+              <ion-item ng-repeat="deviceContact in nonWhamiUser | orderBy:'name.familyName' | orderBy:'name.givenName'" ng-show="deviceContact.emails[0]">
+                  <p ng-show="deviceContact.name"  class="fleft"> {{deviceContact.name.givenName}} {{deviceContact.name.familyName}}</p>
+                  <p ng-show="!deviceContact.name"  class="fleft">{{deviceContact.emails[0].value}}</p>
+                  <i class="fright  icon-left ion-email sendEmail" ng-click="sendMail(deviceContact.emails[0].value,deviceContact.name.givenName)"></i>
+              </ion-item>
+            </ion-list>
+         </ion-content>
+       
+      </ion-view>
+    </script>
+
+   <script id="setting.html" type="text/ng-template">
+
+      <ion-view title="settings">
+        <ion-nav-buttons side="right">
+          <a class="button button-balanced" ng-click="settingPermission()">ok</a>
+         </ion-nav-buttons>
+         <ion-content>
+          <p>Set permission who can see your location</p>
+            <ul class="list" id="setPermission">
+              <li class="item item-checkbox" ng-repeat="friend in friends | orderBy:'firstName'">
+                <label class="checkbox">
+                  <input type="checkbox" value="{{friend}}" ng-checked="true">
+                </label>
+                 {{friend.firstName}} {{friend.lastName}}
+              </li>
+            </ul>
+         </ion-content>
+       
+      </ion-view>
+    </script>
+
+    <script id="selectFriend.html" type="text/ng-template">
+
+      <ion-view title="Select Friend">
+        <ion-nav-buttons side="right">
+          <a class="button button-balanced" ng-click = "selectedfrnd()">Done</a>
+         </ion-nav-buttons>
+         <ion-content>
+          <p>Select Friend whom you want to send notifications</p>
+           <ul class="list" id="frndselect">
+              <li class="item item-checkbox" ng-repeat="friend in friends | orderBy:'firstName'">
+                <label class="checkbox">
+                  <input type="checkbox" value="{{friend.userId}}">
+                </label>
+                 {{friend.firstName}} {{friend.lastName}}
+              </li>
+            </ul>
+         </ion-content>
+       
+      </ion-view>
+    </script>
+
+    <script id="sendPushNotification.html" type="text/ng-template">
+
+        <ion-view title="Send Notification">
+           <ion-content>
+                <p class="note">Note:</p>
+                  <div>
+                    <label class="item item-input item-stacked-label">
+                    <textarea placeholder="Enter Description" rows="5" cols="50" ng-model="pushMessage"></textarea>
+                    </label>  
+                  </div>
+
+              <button class="button button-block button-positive"  ng-click="sendPushNotification(pushMessage)">
+                Send
+              </button>
+
+           </ion-content>
+        </ion-view>
+    </script>
+
+    <script id="map.html" type="text/ng-template">
+
+      <ion-view title="Map">
+         <ion-content overflow-scroll="true" data-tap-disabled="true">
+         <leaflet center="berlin" layers="layers"  markers="markers"></leaflet>
+        </ion-content>
+        <ion-footer-bar align-title="left">
+            <div class="button-bar">
+              <button class="button icon-left ion-home button-positive" ng-click="homePage()">Home</button>
+              <button class="button icon-left ion-loop button-positive" ng-click="showMoreLocation()">More</button>
+            </div>
+        </ion-footer-bar>
+      </ion-view>
+    </script>
+
+    <script id="frdReq.html" type="text/ng-template">
+
+      <ion-header-bar class="bar-positive">
+          <h1 class="title">3000 Contacts</h1>
+          <div class="button" ng-click="scrollBottom()">
+            Scroll To Bottom
+          </div>
+      </ion-header-bar>
+      <ion-header-bar class="bar-light bar-subheader">
+            <input type="search"
+              placeholder="Filter contacts..."
+              ng-model="search"
+              ng-focus="searchFocused = true"
+              ng-blur="searchFocused = false"
+              ng-change="scrollTop()">
+            <button ng-if="search.length"
+              class="button button-icon ion-android-close input-button"
+              ng-click="clearSearch()">
+            </button>
+      </ion-header-bar>
+      <ion-content>
+          <div class="list">
+            <a class="item my-item frndRequest"
+              collection-repeat="item in getContacts()"
+              collection-item-height="getItemHeight(item)"
+              collection-item-width="getItemWidth(item)"
+             
+              ng-style="{'line-height': getItemHeight(item) + 'px'}"
+              ng-class="{'item-divider': item.isLetter}">
+              <span  class="fleft">
+              <img ng-if="!item.isLetter" ng-src="http://placekitten.com/60/{{55 + ($index % 10)}}">
+
+             
+              {{item.letter || (item.first_name+' '+item.last_name)}}
+              </span>
+              
+               <button ng-if="!item.isLetter" class="addFrnd button icon-right ion-person-add button-positive fright">add friend</button>
+
+
+            </a>
+
+           
+
+          </div>
+      </ion-content>
+
+      
+    </script>
+
+    <script id="contact.html" type="text/ng-template">
+      <ion-view title="Contact">
+        <ion-content>
+          
+        </ion-content>
+      </ion-view>
+    </script>
+
+  </body>
+  
+  <script>
+var ionicApp =   angular.module('ionicApp', ['ionic','ngCordova','leaflet-directive']);
+
+ionicApp.config(function($stateProvider, $urlRouterProvider) {
+
+  $stateProvider
+    .state('tabs', {
+      url: "/tab",
+      abstract: true,
+      templateUrl: "tabs.html"
+    })
+    .state('tabs.home', {
+      url: "/home",
+      views: {
+        'home-tab': {
+          templateUrl: "home.html",
+          controller: 'HomeTabCtrl'
+        }
+      }
+    })
+    .state('tabs.ticket', {
+      url: "/ticket",
+      views: {
+        'home-tab': {
+          templateUrl: "createticket.html",
+           controller: 'createTickitCtrl' 
+        }
+      }
+    })
+    .state('tabs.friendlist', {
+      url: "/friendlist",
+      views: {
+        'home-tab': {
+          templateUrl: "friendlist.html",
+          controller: 'friendlistctrl' 
+        }
+      }
+    })
+    .state('tabs.inviteFriend', {
+      url: "/inviteFriend",
+      views: {
+        'home-tab': {
+          templateUrl: "inviteFriend.html",
+          controller: 'friendlistctrl'
+        }
+      }
+    })
+    .state('tabs.map', {
+      url: "/map:contactId",
+      views: {
+        'home-tab': {
+          templateUrl: "map.html",
+           controller: 'mapctrl'
+        }
+      },resolve:{
+      contactId: ['$stateParams', function($stateParams){
+          return $stateParams.contactId;
+      }]
+    }
+   })
+    .state('tabs.contact', {
+      url: "/contact",
+      views: {
+        'contact-tab': {
+          templateUrl: "contact.html"
+        }
+      }
+    })
+    
+    .state('tabs.selectFriend', {
+      url: "/selectFriend",
+      views: {
+        'home-tab': {
+          templateUrl: "selectFriend.html",
+          controller: 'sendPushNotificationCtrl'
+        }
+      }
+    })
+
+    .state('tabs.sendPushNotification', {
+      url: "/sendPushNotification",
+      views: {
+        'home-tab': {
+          templateUrl: "sendPushNotification.html",
+          controller: 'sendPushNotificationCtrl'
+        }
+      }
+    });
+    
+    
+var user = localStorage.getItem("user");
+ if(!user){
+   $urlRouterProvider.otherwise("/tab/home");
+}else{
+	$urlRouterProvider.otherwise("/tab/ticket");
+	}
+
+})
+
+ionicApp.run(function($rootScope, $ionicLoading, $ionicPlatform,$cordovaPush,backGeoLocationService) {
+  $ionicPlatform.ready(function() {
+    //alert("device");
+    var deviceReady = 1;
+    $rootScope.$broadcast("deviceReady" ,deviceReady );
+
+  isConnected();
+    if (window.plugins.backgroundGeoLocation) {
+   backGeoLocationService.configureBackgroundGeoLocation();
+   }
+   //alert("device");
+    var androidConfig = {
+    "badge":"true",
+    "sound":"true",
+    "alert":"true",
+    "ecb":"onNotification"
+  };
+
+  $cordovaPush.register(androidConfig).then(function(result) {
+    console.log(result);
+    localStorage.setItem("deviceAppId",result);
+      // Success! 
+  }, function(err) {
+    console.log(err);
+      // An error occured. Show a message to the user
+  });
+
+  
+  
+    
+  })
+
+
+})
+
+ function onNotification(e) {
+
+                if (e.alert) {
+                //$("#app-status-ul").append('<li>push-notification: ' + e.alert + '</li>');
+                // showing an alert also requires the org.apache.cordova.dialogs plugin
+                navigator.notification.alert(e.alert);
+                }
+                if (e.sound) {
+                // playing a sound also requires the org.apache.cordova.media plugin
+                   console.log("Sound");
+                }
+                if (e.badge) {
+                pushNotification.setApplicationIconBadgeNumber(successHandler, e.badge);
+                }
+
+            }
+
+function tokenHandler (result) {
+console.log('token: '+ result );
+// Your iOS push server needs to know the token before it can push to this device
+// here is where you might want to send it the token for later use.
+}
+function successHandler (result) {
+console.log('success:'+ result );
+}
+function errorHandler (error) {
+console.log('error:'+ error );
+}
+
+       var downloadSize = 244736;
+            var imageAddr = "http://www.youtubedownloaderhd.com/images/youtube-hd.jpg" + "?n=" + Math.random();
+            var startTime, endTime = 0;
+            var download = new Image();
+
+            download.onload = function () {
+              //alert("down");
+                endTime = (new Date()).getTime();
+                showResults(startTime, endTime, imageAddr, downloadSize);
+            }
+
+            startTime = (new Date()).getTime();
+            download.src = imageAddr;
+
+       
+
+        function isConnected(){
+         //alert("conn");
+            var xhr = new XMLHttpRequest();
+            var file = "http://farm6.static.flickr.com/5035/5802797131_a729dac808_b.jpg";
+            var r = Math.round(Math.random() * 10000);
+            xhr.open('HEAD', file + "?subins=" + r, false);
+            try {
+                xhr.send();
+                if (xhr.status >= 200 && xhr.status < 304) {
+                    return true;
+                } else {
+                    return false;
+                }
+            } catch (e) {
+                return false;
+            }   
+        }
+
+        function showResults(startTime, endTime, imageAddr, downloadSize) {
+            if(isConnected){
+              //alert("ahow");
+                var duration = (endTime - startTime) / 1000; //Math.round()
+                var bitsLoaded = downloadSize * 8;
+                var speedBps = (bitsLoaded / duration).toFixed(2);
+                var speedKbps = (speedBps / 1024).toFixed(2);
+                var finalSpeed = (speedKbps/10);
+                //alert("final speed" + ":" + finalSpeed);
+                //alert("final duration" + ":" + duration);
+                if(finalSpeed < 21){
+                  //alert("low");
+                   // Slow Internet
+
+                } else if(finalSpeed >=21 && finalSpeed < 30){
+                  //alert("m");
+                   // Avg Internet
+
+                } else if(finalSpeed >= 30){
+                 // alert("h");
+                  // Fast Internet
+                }
+            }else{
+                //No intenet
+            }    
+        }    
+
+</script>
+
+ <script src= "js/controller/HomeTabCtrl.js"></script>
+ <script src= "js/controller/gpsControler.js"></script>
+ <script src= "js/controller/HomePage.js"></script>
+ <script src= "js/controller/createtickit.js"></script>
+ <script src= "js/controller/directive.js"></script>
+ <script src= "js/controller/friendlist.js"></script>
+ <script src= "js/controller/map.js"></script>
+ <script src= "js/controller/pushNotification.js"></script>
+
+</html>

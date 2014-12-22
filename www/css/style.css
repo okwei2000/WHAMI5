@@ -1,0 +1,68 @@
+/* Empty. Add your own CSS if you like */
+
+.leaflet-container {
+  width: 100%;
+  height: 100%;
+}
+.clr{clear:both}
+.fleft{float:left;}
+.fright{float:right; margin-right:20px;}
+.selectapi{width:92%;margin:0px auto;}
+.appName h1{font-size:30px !important;}
+.appName{position:none !important;}
+.autoGps{padding:10px;}
+.gpssetting{border:2px solid #ddd;margin:10px;}
+.gpsSettingtittle{margin-left: 10px;margin-top: 15px !important;}
+.setting{margin-right: 15px;}
+.profiledatabd{border:2px solid #ddd;}
+.description{width:77%;}
+.note{margin-top:10px; margin-bottom:20px; margin-right:20px;}
+.reminder{width:77%;}
+.subject{margin-top:10px; margin-bottom:40px; margin-right:10px;}
+.votingoption{margin-left:-15px;}
+.yes{margin-right:-5px;}
+.mayBe{margin-right:-5px;}
+.mayBePortion{padding:0px;}
+.no{margin-right:-5px;}
+.startWhami{height:150px;}
+.nameMrgn{margin-top: 50px; display: block;}
+.tickitIcon{position: absolute;left: 0px;right: 0px; width: 48px;height: 48px;margin: auto;}
+.topsection{height: 55px;}
+.disabled {
+  filter: Alpha(Opacity=30);
+  opacity: .3;
+  zoom: 1;
+  cursor: default !important;
+  pointer-events: none;
+}
+
+
+/* frd Request*/
+
+.button.button-icon.input-button {
+  position: absolute;
+  right: 0;
+  top: 5px;
+  color: #bbb;
+}
+.frndRequest img {
+  height: 60px;
+  width: 60px;
+  float: left;
+  margin-top: 20px;
+  margin-right: 10px;
+}
+.list .my-item.item {
+  left: 0;
+  right: 0;
+  padding-top: 0;
+  padding-bottom: 0;
+}
+
+.addFrnd{
+	margin-top: 20px;
+   }
+
+.sendEmail{
+	font-size: 30px;
+}   
